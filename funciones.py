@@ -45,7 +45,10 @@ def exp_t(a, iterMax, tol):
     """
     sk = 0
     for i in range(iterMax):
-        sk_n = sk + a**(i)* div_t(fac(i), iterMax, tolerancia)[0]
+        div= div_t(fac(i), iterMax, tolerancia)
+        if isinstance(div, tuple):
+            div= div[0]
+        sk_n = sk + a**(i) * div
         err = abs(sk_n-sk)
         sk = sk_n
         if err < tol:
@@ -56,7 +59,7 @@ def exp_t(a, iterMax, tol):
 def sin_t(a, iterMax, tol):
     """
     La función sin_t aproxima el valor de sin(a)
-    Sintaxis de la función: (sk, err, n)=sin_t(a, iterMax, tol)
+    Sintaxis de la función: sin_t(a, iterMax, tol)
     Parametros de entrada: 
                a = numero real
                iterMax= numero entero positivo, que representa la cantida de itereaciones maximas del metodo
@@ -69,7 +72,10 @@ def sin_t(a, iterMax, tol):
     sk= 0
 
     for i in range(iterMax):
-        sk_n= sk + ((-1)**i) * (a**(2*i+1)) * div_t(fac(2*i+1), iterMax, tolerancia)[0]
+        div= div_t(fac(2*i+1), iterMax, tol)
+        if isinstance(div, tuple):
+            div= div[0]
+        sk_n= sk + ((-1)**i) * (a**(2*i+1)) * div
         err = abs(sk_n-sk)
         sk = sk_n
         if err < tol:
@@ -94,7 +100,10 @@ def cos_t(a, iterMax, tol):
     sk=0
 
     for i in range(iterMax):
-        sk_n =  sk + ((-1)**i) * (a**(2*i)) * div_t(fac(2*i), iterMax, tolerancia)[0]
+        div= div_t(fac(2*i), iterMax, tol)
+        if isinstance(div, tuple):
+            div= div[0]
+        sk_n =  sk + ((-1)**i) * (a**(2*i)) * div
         err = abs(sk_n-sk)
         sk = sk_n
         if err < tol:
@@ -137,11 +146,21 @@ def in_t(a, iterMax, tol):
                err= error dado por la formula S_(k+1)-S_(k)|<tol
                k= cantidad de iteraciones
     """
+    if a<=0:
+        return "Error de Calculo"
     sk=0
     const= (2*(a-1))/(a+1)
 
     for i in range(iterMax):
-        sk_n = sk + 1*div_t((2*i+1), iterMax, tolerancia)[0] *((a-1)*div_t(a+1, iterMax, tolerancia))[0]**(2*i)
+        div1= div_t((2*i+1), iterMax, tol)
+        if isinstance(div1, tuple):
+            div1= div1[0]
+        div2= div_t(a+1, iterMax, tol)
+        
+        if isinstance(div2, tuple):
+            div2= div2[0]
+
+        sk_n = sk + 1* div1 * ((a-1)*div2)**(2*i)
         err = abs(sk_n - sk)
         sk = sk_n
         if err < tol:
@@ -166,6 +185,8 @@ def log_t(a, b, iterMax, tol):
                err= error dado por la formula S_(k+1)-S_(k)|<tol
                k= cantidad de iteraciones
     """
+    if a <= 0 or b <= 0 or b == 1:
+        return "Error de Calculo"
 
     numerador= in_t(a, iterMax, tol)
     denominador= in_t(b, iterMax, tol)
@@ -194,7 +215,10 @@ def sinh_t(a, iterMax, tol):
     sk=0
 
     for i in range(iterMax):
-        sk_n = sk + (a**(2*i+1)) * div_t(fac(2*i+1), iterMax, tol)[0]
+        div= div_t(fac(2*i+1), iterMax, tol)
+        if isinstance(div, tuple):
+            div= div[0]
+        sk_n = sk + (a**(2*i+1)) * div
         err = abs(sk_n - sk)
         sk = sk_n
         if err < tol:
@@ -218,7 +242,10 @@ def cosh_t(a, iterMax, tol):
     sk=0
 
     for i in range(iterMax):
-        sk_n = sk + (a**(2*i)) * div_t(fac(2*i), iterMax, tolerancia)[0]
+        div= div_t(fac(2*i), iterMax, tol)
+        if isinstance(div, tuple):
+            div= div[0]
+        sk_n = sk + (a**(2*i)) * div
         err = abs(sk_n - sk)
         sk = sk_n
         if err < tol:
@@ -262,6 +289,9 @@ def asin_t(a, iterMax, tol):
                err= error dado por la formula S_(k+1)-S_(k)|<tol
                k= cantidad de iteraciones
     """
+    if not(-1<=a<=1):
+        return "Error de Calculo"
+        
     sk=0
 
     for i in range(iterMax):
@@ -290,6 +320,9 @@ def acos_t(a, iterMax, tol):
                err= error dado por la formula S_(k+1)-S_(k)|<tol
                k= cantidad de iteraciones
     """
+ 
+    if not(-1<=a<=1):
+        return "Error de Calculo"
     resultados= asin_t(a, iterMax, tol)
     sk= pi*div_t(2, iterMax, tol)[0] - resultados[0]
     err= resultados[1]
@@ -356,6 +389,9 @@ def root_t(a, p, iterMax, tol):
     """
     sk= a * div_t(2, iterMax, tol)[0]
 
+    if a<0 and p%2==0:
+        return "Error de Calculo"
+
     for i in range(iterMax):
         numerador= sk**p - a
         denomidaor= div_t(p * (sk**(p-1)), iterMax, tol)[0]
@@ -380,6 +416,8 @@ def sec_t(a, iterMax, tol):
                k= cantidad de iteraciones
     """
     denominador= cos_t(a, iterMax, tol)
+    if denominador[0] == 0:
+        return "Error de calculo"
     div= div_t(denominador[0], iterMax, tol)
     sk= div[0]
     list_err= [denominador[1], div[1]]
@@ -401,6 +439,8 @@ def csc_t(a, iterMax, tol):
                k= cantidad de iteraciones
     """
     denominador= sin_t(a, iterMax, tol)
+    if denominador[0] == 0:
+        return "Error de calculo"
     div= div_t(denominador[0], iterMax, tol)
     sk= div[0]
     list_err= [denominador[1], div[1]]
@@ -422,6 +462,8 @@ def cot_t(a, iterMax, tol):
                k= cantidad de iteraciones
     """
     denominador= tan_t(a, iterMax, tol)
+    if denominador[0] == 0:
+        return "Error de calculo"
     div= div_t(denominador[0], iterMax, tol)
     sk= div[0]
     list_err= [denominador[1], div[1]]
@@ -440,6 +482,8 @@ def power_t(a, b):
                sk= valor de a^b
             
     """
+    if (a==0 and b==0) or a <= 0 and not isinstance(b, int):
+        return "Error de Calculo"
     sk=1
 
     for i in range(int(b)):
@@ -460,7 +504,10 @@ def sqrt_t(a, iterMax, tol):
                k= cantidad de iteraciones
     """
     resultado= root_t(a, 2, iterMax, tol)
-    sk= resultado[0]
+    if isinstance(resultado, tuple):
+            sk= resultado[0]
+    else:
+        sk= resultado
     err= resultado[1]
     k= resultado[2]
 
