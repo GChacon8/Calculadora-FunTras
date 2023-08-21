@@ -69,6 +69,9 @@ def sin_t(a, iterMax, tol):
                err= error dado por la formula S_(k+1)-S_(k)|<tol
                k= cantidad de iteraciones
     """
+    if a>2*pi:
+        while a>2*pi:
+            a-=2*pi
     sk= 0
 
     for i in range(iterMax):
@@ -97,6 +100,9 @@ def cos_t(a, iterMax, tol):
                err= error dado por la formula S_(k+1)-S_(k)|<tol
                k= cantidad de iteraciones
     """
+    if a>2*pi:
+        while a>2*pi:
+            a-=2*pi
     sk=0
 
     for i in range(iterMax):
