@@ -72,6 +72,9 @@ def sin_t(a, iterMax, tol):
     if a>2*pi:
         while a>2*pi:
             a-=2*pi
+    elif a<-(2*pi):
+        while a<-(2*pi):
+            a+=2*pi
     sk= 0
 
     for i in range(iterMax):
@@ -103,6 +106,9 @@ def cos_t(a, iterMax, tol):
     if a>2*pi:
         while a>2*pi:
             a-=2*pi
+    elif a<-(2*pi):
+        while a<-(2*pi):
+            a+=2*pi
     sk=0
 
     for i in range(iterMax):
@@ -518,3 +524,5 @@ def sqrt_t(a, iterMax, tol):
     k= resultado[2]
 
     return (sk, err, k)
+
+print(cos_t(-120, iteraciones, tolerancia))
