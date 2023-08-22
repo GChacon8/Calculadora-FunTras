@@ -367,7 +367,7 @@ def atan_t(a, iterMax, tol):
                k= cantidad de iteraciones
     """
     sk=0
-    const= pi*div_t(2, iterMax, tol)
+    const= pi*div_t(2, iterMax, tol)[0]
     if -1<=a<=1:
         for i in range(iterMax):
             numerador= ((-1)**i) * (a**(2*i+1))
